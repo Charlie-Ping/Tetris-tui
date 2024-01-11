@@ -1,0 +1,1 @@
+A cross-platform tetris game on terminal, supports Windows and Linux.
