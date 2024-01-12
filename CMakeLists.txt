@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 3.2)
 
 project (Internship_20231614134)
 
+include_directories(include)
+file(GLOB SOURCES "src/*.c")
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -pie")
 
 set(EXTERNAL_DIR "${CMAKE_SOURCE_DIR}/external")
@@ -30,7 +33,7 @@ if (WIN32)
     # 编译pdcurses
     add_custom_target(
         PDCurses_wincon ALL
-        COMMAND make -C ${EXTERNAL_DIR}/PDCurses/wincon TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX} DLL=Y
+        COMMAND make -C ${EXTERNAL_DIR}/PDCurses/wincon TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX} DLL=Y WIDE=Y UTF8=Y
         WORKING_DIRECTORY ${EXTERNAL_DIR}/PDCurses/wincon
     )
 
@@ -43,7 +46,7 @@ if (WIN32)
     set_target_properties(pdcurses_win PROPERTIES IMPORTED_IMPLIB "{WIN_LIB}/pdcurses.a" IMPORTED_LOCATION "${WIN_LIB}/pdcurses.dll")
 
     # 添加链接库
-    add_executable(Tetris-win-x64 ./src/main.c)
+    add_executable(Tetris-win-x64 ${SOURCES})
     # 确保 Tetris-win-x64 在 pdcurses.dll 完成构建之后才开始构建。
     add_dependencies(Tetris-win-x64 PDCurses_wincon)
     set_target_properties(Tetris-win-x64 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${WIN_BIN}")
@@ -56,7 +59,7 @@ else()
     ExternalProject_Add(
         PDCurses_x11
         SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/PDCurses/x11
-        CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/external/PDCurses/x11/configure
+        CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/external/PDCurses/x11/configure --enable-force-utf8
         BUILD_COMMAND make
         BUILD_IN_SOURCE 1
         INSTALL_COMMAND ""
@@ -74,7 +77,7 @@ else()
     set_target_properties(pdcurses_x11 PROPERTIES IMPORTED_LOCATION "${LINUX_LIB}/libXCurses.so")
 
     #添加链接库
-    add_executable(Tetris-linux-x64 ./src/main.c)
+    add_executable(Tetris-linux-x64 ${SOURCES})
     set_target_properties(Tetris-linux-x64 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${LINUX_BIN}")
     add_dependencies(Tetris-linux-x64 PDCurses_x11)
     target_link_libraries(Tetris-linux-x64 PRIVATE pdcurses_x11)
