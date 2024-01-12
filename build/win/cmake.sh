@@ -1,1 +1,0 @@
-cmake -DCMAKE_TOOLCHAIN_FILE=mingw-w64-x86-64.cmake ../..
