@@ -11,5 +11,6 @@
 int main() {
     initWindow();
     initGame();
+    ;
     return 0;
 }

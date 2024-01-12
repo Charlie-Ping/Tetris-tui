@@ -1,0 +1,9 @@
+homework/
+material/
+
+build/linux/*
+!build/linux/cmake.sh
+
+build/win/*
+!build/win/cmake.sh
+!build/win/mingw-w64-x86-64.cmake
